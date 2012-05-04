@@ -1,4 +1,4 @@
-package SEC;
+package test1;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -10,6 +10,7 @@ import javax.mail.MessagingException;
 import javax.mail.Multipart;
 import javax.mail.Part;
 import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
 
 
 
@@ -21,21 +22,28 @@ import javax.mail.internet.InternetAddress;
  */
 public class EmailDataStorage implements StorageDataStructure<Message> {
 
-	public EmailDataStorage() {
-
+	public EmailDataStorage(Message[] messages, EmailServer server) {
+		mails = messages;
+		this.server = server;
 	}
 
-	public EmailDataStorage(Message[] messages) {
-		mails = messages;
+	public EmailDataStorage(EmailServer server) {
+		this.server = server;
 	}
 
 	@Override
 	public void add(String key, Message obj) {
-		Message[] temp = new Message[Integer.parseInt(key)];
-		for (int i = 0; i < mails.length; i++) 
-			temp[i] = mails[i];
-		temp[temp.length-1] = obj;
-		mails = temp;	
+		if (isEmpty()) {
+			mails = new Message[1];
+			mails[0] = obj;
+		}
+		else {
+			Message[] temp = new Message[Integer.parseInt(key)];
+			for (int i = 0; i < mails.length; i++) 
+				temp[i] = mails[i];
+			temp[temp.length-1] = obj;
+			mails = temp;				
+		}
 	}
 
 	@Override
@@ -75,24 +83,24 @@ public class EmailDataStorage implements StorageDataStructure<Message> {
 
 	@Override
 	public boolean loadFromFileFormat(String[] file) {
-		Message[] mail = new Message[file.length];
+		MimeMessage[] mail = new MimeMessage[file.length];
+		if(mails == null)
+			mails = new Message[file.length];
+		
 		for (int i = 0; i < file.length; i++) {
-			//mail[i] = new Me;
+			mail[i] = new MimeMessage(server.getSession());
 			String[] parse = file[i].split("-,-");
-			for (int j = 0; j < parse.length; j++) {
-				System.out.println(parse[j]);
-			}
 			try {
 				mail[i].setSubject(parse[0]);
 				mail[i].setFrom(new InternetAddress(parse[1]));
 				mail[i].setRecipient(RecipientType.TO, new InternetAddress(parse[2]));
-				mail[i].setContent(parse[4], "text/html");
-				System.out.println(mail[i]);
+				mail[i].setContent(parse[3], "text/html");
+				mails[i] = mail[i];
 			} catch (MessagingException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-
+			
 		}
 		return false;
 	}
@@ -123,19 +131,21 @@ public class EmailDataStorage implements StorageDataStructure<Message> {
 
 	@Override
 	public int size() {
+		if(isEmpty())
+			return 1;
 		return mails.length;
 	}
 
 	@Override
 	public boolean isEmpty() {
-		if(mails[0] == null)
+		if(mails == null)
 			return true;
 		return false;
 	}
 
 	@Override
 	public void clear() {
-		mails = new Message[1];
+		mails = null;
 	}
 
 	/**
@@ -176,7 +186,10 @@ public class EmailDataStorage implements StorageDataStructure<Message> {
 		}
 		return null;
 	}
+	
+	
 
 
 	private Message[] mails;
+	private EmailServer server;
 }

@@ -1,4 +1,4 @@
-package SEC;
+package test1;
 
 import java.util.Properties;
 

@@ -1,4 +1,4 @@
-package SEC;
+package test1;
 
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -48,7 +48,6 @@ public class Runner {
 	/**
 	 * @param args
 	 */
-	@SuppressWarnings("unused")
 	public static void main(String[] args) {
 		// Here we need to check, first than anything else, that there is an AccountProperties.dat
 		// file. If it doesn't exists, we need to create it. You can use the previous method to do
@@ -82,7 +81,7 @@ public class Runner {
 		// Otherwise, we only store as many emails as are present in the server. DONE
 		// For the contact storage, we will only store one dummy contact. 
 		server = new EmailServer(accountProperties.getProperty("username"), accountProperties.getProperty("password"), accountProperties.getProperty("incomingHost"), accountProperties.getProperty("outgoingHost"));
-		if(true) {
+		if(!new File("EmailDataStorage.dat").exists()) {
 			//!new File("EmailDataStorage.dat").exists()
 			try {
 				server.getInboxFromServer();
@@ -91,10 +90,10 @@ public class Runner {
 					for (int i = 0; i < 200; i++) 
 						messages[i] = server.getMessage(i);
 
-					emailStorage = new EmailDataStorage(messages);
+					emailStorage = new EmailDataStorage(messages, server);
 				}
 				else {
-					emailStorage = new EmailDataStorage(server.getAllMessages());
+					emailStorage = new EmailDataStorage(server.getAllMessages(), server);
 				}
 			} catch (MessagingException e) {
 				e.printStackTrace();
@@ -102,11 +101,16 @@ public class Runner {
 		}
 		else {
 			try {
-				Scanner reader;
-				reader = new Scanner(new FileReader("EmailDataStorage.dat"));
-				reader.close();
-				emailStorage = new EmailDataStorage();
+				FileInputStream fin = new FileInputStream("EmailDataStorage.dat");
+				ObjectInputStream objectInputStream = new ObjectInputStream(fin);
+				String[] parse = (String[]) objectInputStream.readObject();
+				objectInputStream.close();
+				emailStorage = new EmailDataStorage(server);
+				emailStorage.loadFromFileFormat(parse);
 			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (ClassNotFoundException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}

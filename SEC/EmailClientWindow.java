@@ -1,4 +1,4 @@
-package SEC;
+package test1;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -245,7 +245,7 @@ public class EmailClientWindow extends JPanel implements ListSelectionListener, 
 				
 				
 				for(int i = serverStart; i>=(serverEnd); i--) {
-					emailStorage.add(Integer.toString((-1)*(i-(messages.length-1))), messages[i]);
+					emailStorage.add(Integer.toString((-1)*(i-(messages.length))), messages[i]);
 				}
 				
 				if (emailStorage.size() < 25) {
