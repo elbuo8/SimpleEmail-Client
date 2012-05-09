@@ -4,17 +4,25 @@ import java.io.Serializable;
 
 
 /**
- * IMPORTANT: This class is to be implemented by students!
  * This class describes a contact to be used on the email client. 
- * @author 
+ * @author yamilasusta
  *
  */
 public class EmailContact implements Serializable{
 
 	/**
-	 * 
+	 * Avoid Eclipse warnings
 	 */
 	private static final long serialVersionUID = -2796637422692758004L;
+	
+	/**
+	 * Default constructor
+	 * @param name Name
+	 * @param email Email
+	 * @param phone Phone
+	 * @param address Address
+	 * @param note Note
+	 */
 	public EmailContact(String name, String email, String phone, String address,
 			String note) {
 		this.email = email;
@@ -24,26 +32,50 @@ public class EmailContact implements Serializable{
 		this.note = note;
 	}
 
+	/**
+	 * 
+	 * @return The email
+	 */
 	public String getEmail() {
 		return email;
 	}
 
+	/**
+	 * 
+	 * @return The note
+	 */
 	public String getNote() {
 		return note;
 	}
 
+	/**
+	 * 
+	 * @return The address 
+	 */
 	public String getAddress() {
 		return address;
 	}
 
+	/**
+	 * 
+	 * @return Phone Number
+	 */
 	public String getPhoneNumber() {
 		return phone;
 	}
 
+	/**
+	 * 
+	 * @return Email address
+	 */
 	public String getEmailAddress() {
 		return getEmail();
 	}
 
+	/**
+	 * 
+	 * @return The name
+	 */
 	public String getName() {
 		return name;
 	}

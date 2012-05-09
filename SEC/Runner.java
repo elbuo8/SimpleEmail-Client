@@ -11,6 +11,9 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.Properties;
 import java.util.Scanner;
 
@@ -28,7 +31,6 @@ public class Runner {
 	private static JFrame frame;
 
 	/**
-	 * THIS METHOD NEEDS TO BE COMPLETED
 	 * Static method that will be used to create a new email account if there's no present.
 	 * @throws IOException 
 	 */
@@ -87,13 +89,13 @@ public class Runner {
 				server.getInboxFromServer();
 				if(server.getMessageCount() > 200) {
 					Message[] messages = new Message[200];
+					Message[] messages2 = server.getAllMessages();
 					for (int i = 0; i < 200; i++) 
-						messages[i] = server.getMessage(i);
-
-					emailStorage = new EmailDataStorage(messages, server);
+						messages[i] = messages2[i];
+					emailStorage = new EmailDataStorage((Message[]) reverse(messages), server);
 				}
 				else {
-					emailStorage = new EmailDataStorage(server.getAllMessages(), server);
+					emailStorage = new EmailDataStorage((Message[]) reverse(server.getAllMessages()), server);
 				}
 			} catch (MessagingException e) {
 				e.printStackTrace();
@@ -184,7 +186,6 @@ public class Runner {
 					ObjectOutputStream objectOutputStream = new ObjectOutputStream(fout);
 					objectOutputStream.writeObject(emailStorage.toFileFormat());
 					objectOutputStream.close();
-					emailStorage.loadFromFileFormat(emailStorage.toFileFormat());
 				} 
 				catch (IOException e) {
 					return;
@@ -199,6 +200,17 @@ public class Runner {
 
 		frame.setVisible(true);
 
+	}
+	
+	/**
+	 * Workaround for reading the email list backwards
+	 * @param arr Email list
+	 * @return Corrected order
+	 */
+	public static Object[] reverse(Object[] arr) {
+	List<Object> list = Arrays.asList(arr);
+	Collections.reverse(list);
+	return list.toArray();
 	}
 
 }

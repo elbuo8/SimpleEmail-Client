@@ -3,9 +3,9 @@ package test1;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import javax.mail.Address;
 import javax.mail.Message;
 import javax.mail.Message.RecipientType;
-import javax.mail.Address;
 import javax.mail.MessagingException;
 import javax.mail.Multipart;
 import javax.mail.Part;
@@ -15,23 +15,37 @@ import javax.mail.internet.MimeMessage;
 
 
 /**
- * IMPORTANT: THIS CLASS IS TO BE IMPLEMENTED BY STUDENTS!
  * This class describes some kind of database in which email messages are stored.
- * @author 
+ * @author yamilasusta
  *
  */
 public class EmailDataStorage implements StorageDataStructure<Message> {
 
+	/**
+	 * Constructor for when the file doesn't exist
+	 * @param messages Message array
+	 * @param server Server session
+	 * 
+	 */
 	public EmailDataStorage(Message[] messages, EmailServer server) {
 		mails = messages;
 		this.server = server;
 	}
 
+	/**
+	 * Constructor for when the file exits
+	 * @param server
+	 */
 	public EmailDataStorage(EmailServer server) {
 		this.server = server;
 	}
 
-	@Override
+	/**
+	 * Adds a new object to the storage. If a key already exists in the storage, the object
+	 * with that key is replaced by the given one.
+	 * @param key The key of the object to be stored
+	 * @param obj The object to be stored.
+	 */
 	public void add(String key, Message obj) {
 		if (isEmpty()) {
 			mails = new Message[1];
@@ -46,7 +60,11 @@ public class EmailDataStorage implements StorageDataStructure<Message> {
 		}
 	}
 
-	@Override
+	/**
+	 * Removes the object with the specified key from the storage.
+	 * @param key The key of the object to be removed.
+	 * @return True if the object was successfully removed, false otherwise.
+	 */
 	public boolean remove(String key) {
 		try {
 			ArrayList<Message> parse = new ArrayList<Message>();
@@ -63,25 +81,38 @@ public class EmailDataStorage implements StorageDataStructure<Message> {
 		}
 	}
 
-	@Override
+	/**
+	 * Returns the object with the given key in the storage.
+	 * @param key The key of the object to be returned.
+	 * @return The object that has the key specified.
+	 */
 	public Message get(String key) {
 		return mails[Integer.parseInt(key)];
 	}
 
-	@Override
+	/**
+	 * Loads the storage from a given String array, that could be loaded from a file.
+	 * @param file The String array containing a storage object.
+	 * @return True if the String array contained a proper storage object, false otherwise.
+	 */
 	public boolean contains(String key) {
 		for (int i = 0; i < mails.length; i++)
 			try {
-				if(mails[i].getSubject().equalsIgnoreCase(key))
+				if(mails[i].getSubject().equalsIgnoreCase(key) || mails[i].getFrom().equals(key) || mails[i].getAllRecipients().equals(key) || mails[i].getContent().equals(key))
 					return true;
 			} catch (MessagingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		return false;
 	}
-
-	@Override
+	/**
+	 * Returns a String array describing the data storage that can be saved to a file. 
+	 * @return The String array containing the data storage.
+	 */
 	public boolean loadFromFileFormat(String[] file) {
 		MimeMessage[] mail = new MimeMessage[file.length];
 		if(mails == null)
@@ -105,7 +136,10 @@ public class EmailDataStorage implements StorageDataStructure<Message> {
 		return false;
 	}
 
-	@Override
+	/**
+	 * Returns an array of all the objects of type E being stored in the storage.
+	 * @return Array of objects stored.
+	 */
 	public String[] toFileFormat() {
 		String[] parser = new String[mails.length];
 		try {
@@ -123,27 +157,38 @@ public class EmailDataStorage implements StorageDataStructure<Message> {
 		} 
 		return parser;
 	}
-
-	@Override
+	
+	/**
+	 * Returns the actual size of the storage. 
+	 * @return The size of the storage.
+	 */
 	public Message[] getAllValues() {
 		return mails;
 	}
 
-	@Override
+	/**
+	 * Checks whether the data storage is empty or not.
+	 * @return True if it's empty, false otherwise.
+	 */
 	public int size() {
 		if(isEmpty())
 			return 1;
 		return mails.length;
 	}
 
-	@Override
+	/**
+	 * Checks whether the data storage is empty or not.
+	 * @return True if it's empty, false otherwise.
+	 */
 	public boolean isEmpty() {
 		if(mails == null)
 			return true;
 		return false;
 	}
-
-	@Override
+	
+	/**
+	 * Empties the Data Storage.
+	 */
 	public void clear() {
 		mails = null;
 	}
@@ -187,9 +232,6 @@ public class EmailDataStorage implements StorageDataStructure<Message> {
 		return null;
 	}
 	
-	
-
-
 	private Message[] mails;
 	private EmailServer server;
 }

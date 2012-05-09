@@ -54,7 +54,7 @@ public class EmailClientWindow extends JPanel implements ListSelectionListener, 
 	 * Serial ID to stop warning messages
 	 */
 	private static final long serialVersionUID = 1L;
-	
+
 	/**
 	 * Listener object for New Email Account Window
 	 * @author hfranqui
@@ -117,8 +117,13 @@ public class EmailClientWindow extends JPanel implements ListSelectionListener, 
 		public void actionPerformed(ActionEvent e) {
 			JButton temp = (JButton) e.getSource();
 			if(temp.getText().equals("OK")) {
-				// TODO Change this depending of your constructor
+				if(f1.getText().equals("")) { f1.setText("empty bro");}
+				if(f2.getText().equals("")) { f2.setText("empty bro");}
+				if(f3.getText().equals("")) { f3.setText("empty bro");}
+				if(f4.getText().equals("")) { f4.setText("empty bro");}
+				if(f5.getText().equals("")) { f5.setText("empty bro");}
 				EmailContact temp1 = new EmailContact(f1.getText(), f2.getText(), f3.getText(), f4.getText(), f5.getText());
+
 				if(type == 0) {
 					contactStorage.add(Integer.toString(contactStorage.size()+1), temp1);
 				}
@@ -233,21 +238,21 @@ public class EmailClientWindow extends JPanel implements ListSelectionListener, 
 				// Very important, otherwise we are just adding the same emails back to the storage
 				// thus creating duplicates
 				emailStorage.clear();
-				
+
 				int serverMessages = messages.length;
 				int serverStart = messages.length-1, serverEnd = messages.length-200;
 				if (serverStart < 0)
 					serverStart = 0;
 				if (serverMessages < 200)
 					serverEnd = 0;
-				
+
 				currentStart = 0;
-				
-				
+
+
 				for(int i = serverStart; i>=(serverEnd); i--) {
 					emailStorage.add(Integer.toString((-1)*(i-(messages.length))), messages[i]);
 				}
-				
+
 				if (emailStorage.size() < 25) {
 					currentEnd = emailStorage.size()-1;
 					pageIncrease = emailStorage.size()-1;			
@@ -255,10 +260,10 @@ public class EmailClientWindow extends JPanel implements ListSelectionListener, 
 				else {
 					pageIncrease = emailStorage.size()/8;
 				}
-				
+
 				DefaultTableModel model = new DefaultTableModel(getHeaderList(currentStart,currentEnd), columnNames);
 				emailList.setModel(model);
-				
+
 				updateStatusBar();
 			}
 
@@ -315,7 +320,7 @@ public class EmailClientWindow extends JPanel implements ListSelectionListener, 
 		 * Serial ID to stop warning messages
 		 */
 		private static final long serialVersionUID = 1L;
-		
+
 		public EntryField(String label, int pos, int width) {
 			this.label = new JLabel(label);
 			this.entry = new JTextField();
@@ -380,7 +385,7 @@ public class EmailClientWindow extends JPanel implements ListSelectionListener, 
 		this.server = server;
 		this.emailStorage = storage;
 		this.contactStorage = storage1;
-		
+
 		this.statusBar = new JLabel("Viewing " + (currentStart+1) + " - " + (currentEnd+1) + " of " + emailStorage.size());
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
@@ -393,9 +398,9 @@ public class EmailClientWindow extends JPanel implements ListSelectionListener, 
 		} catch (UnsupportedLookAndFeelException e) {
 			e.printStackTrace();
 		}
-		
+
 		this.currentStart = 0;
-		
+
 		if (emailStorage.size() < 25) {
 			this.currentEnd = emailStorage.size()-1;
 			this.pageIncrease = emailStorage.size()-1;			
@@ -458,10 +463,10 @@ public class EmailClientWindow extends JPanel implements ListSelectionListener, 
 		JButton b1 = new JButton("New Email"), b2 = new JButton("New Contact"), b3 = new JButton("Refresh"), b4= new JButton("Next Page"), b5 = new JButton("Prev Page");
 		b1.addActionListener(toolbarListener);
 		b1.setIcon(new ImageIcon(System.getProperty("user.dir") + File.separatorChar + "resources" + File.separatorChar + "gnome-stock-mail-new.png"));
-		
+
 		b2.addActionListener(toolbarListener);
 		b2.setIcon(new ImageIcon(System.getProperty("user.dir") + File.separatorChar + "resources" + File.separatorChar + "contact-new.png"));
-		
+
 		b3.addActionListener(toolbarListener);
 		b3.setIcon(new ImageIcon(System.getProperty("user.dir") + File.separatorChar + "resources" + File.separatorChar + "view-refresh.png"));
 
@@ -492,7 +497,7 @@ public class EmailClientWindow extends JPanel implements ListSelectionListener, 
 
 		windowPanel.add(viewPanel,BorderLayout.CENTER);
 		windowPanel.add(statusBar, BorderLayout.SOUTH);
-		
+
 		return windowPanel;
 	}
 
@@ -526,7 +531,7 @@ public class EmailClientWindow extends JPanel implements ListSelectionListener, 
 	// Method not implemented.
 	@Override
 	public void mouseEntered(MouseEvent e) {
-	
+
 	}
 
 	// Method not implemented.
