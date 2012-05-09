@@ -40,11 +40,7 @@ public class Runner {
 		if(accountProperties == null) {
 			System.exit(0);
 		}
-		//Add code that we need to save the accountProperties to a file... DONE
-		FileOutputStream fout = new FileOutputStream("AccountProperties.dat");
-		ObjectOutputStream object = new ObjectOutputStream(fout);
-		object.writeObject(accountProperties);
-		object.close();
+		accountProperties.store(new FileWriter("AccountProperties.dat"), null);
 	}
 
 	/**
@@ -64,14 +60,9 @@ public class Runner {
 
 		//Read values
 		try {
-			FileInputStream fin = new FileInputStream("AccountProperties.dat");
-			ObjectInputStream objectInputStream = new ObjectInputStream(fin);
-			accountProperties = (Properties) objectInputStream.readObject();
-			objectInputStream.close();
+			accountProperties = new Properties();
+			accountProperties.load(new FileReader("AccountProperties.dat"));
 		} catch (IOException e) {
-			// Auto-generated catch block
-			e.printStackTrace();
-		} catch (ClassNotFoundException e) {
 			// Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -184,8 +175,10 @@ public class Runner {
 					fw.close();
 					FileOutputStream fout = new FileOutputStream("EmailDataStorage.dat");
 					ObjectOutputStream objectOutputStream = new ObjectOutputStream(fout);
-					objectOutputStream.writeObject(emailStorage.toFileFormat());
+					String[] holder = emailStorage.toFileFormat();
+					objectOutputStream.writeObject(holder);
 					objectOutputStream.close();
+					fout.close();
 				} 
 				catch (IOException e) {
 					return;

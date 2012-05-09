@@ -96,17 +96,8 @@ public class EmailDataStorage implements StorageDataStructure<Message> {
 	 * @return True if the String array contained a proper storage object, false otherwise.
 	 */
 	public boolean contains(String key) {
-		for (int i = 0; i < mails.length; i++)
-			try {
-				if(mails[i].getSubject().equalsIgnoreCase(key) || mails[i].getFrom().equals(key) || mails[i].getAllRecipients().equals(key) || mails[i].getContent().equals(key))
-					return true;
-			} catch (MessagingException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+		if(Integer.parseInt(key) <= size()-1)
+			return true;
 		return false;
 	}
 	/**
@@ -114,10 +105,11 @@ public class EmailDataStorage implements StorageDataStructure<Message> {
 	 * @return The String array containing the data storage.
 	 */
 	public boolean loadFromFileFormat(String[] file) {
+		clear();
 		MimeMessage[] mail = new MimeMessage[file.length];
 		if(mails == null)
 			mails = new Message[file.length];
-		
+
 		for (int i = 0; i < file.length; i++) {
 			mail[i] = new MimeMessage(server.getSession());
 			String[] parse = file[i].split("-,-");
@@ -131,9 +123,9 @@ public class EmailDataStorage implements StorageDataStructure<Message> {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			
+		
 		}
-		return false;
+		return true;	
 	}
 
 	/**
@@ -148,7 +140,16 @@ public class EmailDataStorage implements StorageDataStructure<Message> {
 				String from = mailAddresses[0].toString();
 				mailAddresses = mails[i].getAllRecipients();
 				String reply = mailAddresses[0].toString();
-				parser[i] = mails[i].getSubject() + "-,-" + from + "-,-" + reply + "-,-" + getText(mails[i]);
+
+				String subject = mails[i].getSubject().toString();
+				if(subject.equals(""))
+					subject = "(nosubject)";
+
+				String message = getText(mails[i]);
+				if(message.equals(""))
+					message = "(emptyemail)";
+
+				parser[i] = subject + "-,-" + from + "-,-" + reply + "-,-" + message;
 			}
 		} catch (MessagingException e) {
 			e.printStackTrace();
@@ -157,7 +158,7 @@ public class EmailDataStorage implements StorageDataStructure<Message> {
 		} 
 		return parser;
 	}
-	
+
 	/**
 	 * Returns the actual size of the storage. 
 	 * @return The size of the storage.
@@ -185,7 +186,7 @@ public class EmailDataStorage implements StorageDataStructure<Message> {
 			return true;
 		return false;
 	}
-	
+
 	/**
 	 * Empties the Data Storage.
 	 */
@@ -231,7 +232,7 @@ public class EmailDataStorage implements StorageDataStructure<Message> {
 		}
 		return null;
 	}
-	
+
 	private Message[] mails;
 	private EmailServer server;
 }
